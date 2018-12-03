@@ -9,7 +9,8 @@ import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-sca
 export class HomePage {
 
 
-  data={ };
+  data="";
+  matricula;
   option:BarcodeScannerOptions ;
 
   constructor(public navCtrl: NavController, public barcodeScanner: BarcodeScanner) {
@@ -24,7 +25,10 @@ export class HomePage {
     this.barcodeScanner.scan(this.option).then(barcodeData => {
       console.log('Barcode data', barcodeData);
 
-      this.data = barcodeData;
+      this.data = barcodeData.text
+
+      this.matricula = parseInt(this.data);
+
 
      }).catch(err => {
          console.log('Error', err);
