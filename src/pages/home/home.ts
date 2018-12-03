@@ -1,3 +1,4 @@
+import { Service } from './../../services/Service';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner';
@@ -13,7 +14,11 @@ export class HomePage {
   matricula;
   option:BarcodeScannerOptions ;
 
-  constructor(public navCtrl: NavController, public barcodeScanner: BarcodeScanner) {
+  lastAttendance;
+
+  constructor(public navCtrl: NavController, public barcodeScanner: BarcodeScanner, public service: Service) {
+    
+    this.getLastAttendanceByMemberId(9566);
 
   }
 
@@ -29,10 +34,17 @@ export class HomePage {
 
       this.matricula = parseInt(this.data);
 
+      this.getLastAttendanceByMemberId(this.matricula);
 
      }).catch(err => {
          console.log('Error', err);
      });
+  }
+
+  getLastAttendanceByMemberId(memberId){
+    this.service.getGetLastAttendanceByMemberId(memberId).subscribe(
+      (data)=>{this.lastAttendance = data} 
+    )
   }
 
 }
