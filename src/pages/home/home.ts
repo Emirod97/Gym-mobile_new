@@ -1,3 +1,4 @@
+import { Attendace } from './../../app/models/attendance.model';
 import { Service } from './../../services/Service';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
@@ -10,22 +11,17 @@ import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-sca
 export class HomePage {
 
 
-  data="";
+  data = "";
   matricula;
-  option:BarcodeScannerOptions ;
-
-  lastAttendance;
+  option: BarcodeScannerOptions;
+  lastAttendance
 
   constructor(public navCtrl: NavController, public barcodeScanner: BarcodeScanner, public service: Service) {
-    
-    this.getLastAttendanceByMemberId(9566);
-
   }
 
-  scan(){
-    this.option ={
-      showFlipCameraButton:true,
-      prompt:"Escanea tu Credencial"
+  scan() {
+    this.option = {
+      prompt: "Escanea tu Credencial"
     }
     this.barcodeScanner.scan(this.option).then(barcodeData => {
       console.log('Barcode data', barcodeData);
@@ -34,17 +30,50 @@ export class HomePage {
 
       this.matricula = parseInt(this.data);
 
-      this.getLastAttendanceByMemberId(this.matricula);
+      this.validateLastAttendance(this.matricula);
 
-     }).catch(err => {
-         console.log('Error', err);
-     });
+
+    }).catch(err => {
+      console.log('Error', err);
+    });
   }
 
-  getLastAttendanceByMemberId(memberId){
+  validateLastAttendance(memberId) {
     this.service.getGetLastAttendanceByMemberId(memberId).subscribe(
-      (data)=>{this.lastAttendance = data} 
+      (data) => {
+        let date = new Date();
+        let attendance = new Attendace();
+        this.lastAttendance = data;
+
+        if (this.lastAttendance.checkOut != null) {
+          let datetext = date.toTimeString().split(' ')[0];
+          attendance.checkIn = datetext;
+          attendance.date = date;
+          this.saveAttendances(attendance, memberId);
+        } else {
+          this.lastAttendance.checkOut = date;
+          let datetext;
+          this.lastAttendance.checkOut = datetext = this.lastAttendance.checkOut.toTimeString().split(' ')[0];
+          //console.log(this.lastAttendance);
+          this.saveAttendances(this.lastAttendance, memberId);
+        }
+      }
     )
+  }
+
+  saveAttendances(attendance, memberId) {
+    this.service.saveAttendance(attendance, memberId).subscribe(
+      (data) => {
+        console.log(data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+
+  sendAttendance(){
+    this.lastAttendance = this.validateLastAttendance(9566);
   }
 
 }

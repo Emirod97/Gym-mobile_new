@@ -1,6 +1,6 @@
 export class Attendace {
-    id: number;
-    checkIn: Date;
+    id: string;
+    checkIn: string;
     checkOut: Date;
     date: Date;
 

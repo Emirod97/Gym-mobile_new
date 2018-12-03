@@ -15,6 +15,10 @@ export class Service{
         return this.http.get(this.BASE_URL + "/attendances/get-last-attendance/" + memberId);
     }
 
+    saveAttendance(attendance, memberId){
+        return this.http.put(this.BASE_URL + "/attendances/save/ "+ memberId, attendance);
+    }
+
     isEmpty(obj) {
         for(var prop in obj) {
             if(obj.hasOwnProperty(prop))
