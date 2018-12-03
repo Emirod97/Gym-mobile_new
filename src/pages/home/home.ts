@@ -41,24 +41,40 @@ export class HomePage {
   validateLastAttendance(memberId) {
     this.service.getGetLastAttendanceByMemberId(memberId).subscribe(
       (data) => {
-        let date = new Date();
-        let attendance = new Attendace();
-        this.lastAttendance = data;
 
-        if (this.lastAttendance.checkOut != null) {
-          let datetext = date.toTimeString().split(' ')[0];
-          attendance.checkIn = datetext;
-          attendance.date = date;
-          this.saveAttendances(attendance, memberId);
-        } else {
-          this.lastAttendance.checkOut = date;
-          let datetext;
-          this.lastAttendance.checkOut = datetext = this.lastAttendance.checkOut.toTimeString().split(' ')[0];
-          //console.log(this.lastAttendance);
-          this.saveAttendances(this.lastAttendance, memberId);
+        if (data == null) {
+          this.saveNewAttendance(memberId);
+        }else{
+          let date = new Date();
+          let attendance = new Attendace();
+          this.lastAttendance = data;
+  
+          if (this.lastAttendance.checkOut != null) {
+            let datetext = date.toTimeString().split(' ')[0];
+            attendance.checkIn = datetext;
+            attendance.date = date;
+            this.saveAttendances(attendance, memberId);
+          } else {
+            this.lastAttendance.checkOut = date;
+            let datetext;
+            this.lastAttendance.checkOut = datetext = this.lastAttendance.checkOut.toTimeString().split(' ')[0];
+            this.saveAttendances(this.lastAttendance, memberId);
+          }
         }
       }
     )
+  }
+
+  saveNewAttendance(memberId) {
+    let date = new Date();
+    let attendance = new Attendace();
+    let datetext = date.toTimeString().split(' ')[0];
+
+    attendance.checkIn = datetext;
+    attendance.date = date;
+    this.saveAttendances(attendance, memberId);
+
+
   }
 
   saveAttendances(attendance, memberId) {
@@ -72,7 +88,7 @@ export class HomePage {
     )
   }
 
-  sendAttendance(){
+  sendAttendance() {
     this.lastAttendance = this.validateLastAttendance(9566);
   }
 
